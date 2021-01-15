@@ -121,23 +121,68 @@ function orderAlphabetically(arr) {
 
 // BONUS - Iteration 7: Time Format - Turn duration of the movies from hours to minutes
 
-// function turnHoursToMinutes(arr) {
-    
-//     let newArr = JSON.parse(JSON.stringify(arr));
-//     newArr = arr.map(function(ele) {
-//         if(!ele.duration.includes("min")) {
-//             ele.duration = (JSON.parse(ele.duration[0]) * 60);
-//         } else if(!ele.duration.includes("h")) {
-//             ele.duration = (JSON.parse(ele.duration.slice(0,2)));
-//         } else {
-//             ele.duration = (JSON.parse(ele.duration[0]) * 60) + JSON.parse(ele.duration.slice(3,5));
-//         }
+function turnHoursToMinutes(movies) {
+
+    let newMovArr = JSON.parse(JSON.stringify(movies));
+
+    let formattedMovies = newMovArr.map(function(singleMovie) {
+        let duration = singleMovie.duration
         
-    
-//     return ele;
-//   })
+        if(duration.includes(" ")) {
+          let time = duration.split(" "); // ["3h", "20min"]
+          let hrArr = time[0].split("h"); // ["3"]
+          let hours = Number(hrArr[0]); //3
+          let minArr = time[1].split("min"); // ["20"]
+          let minutes = Number(minArr[0]);
+
+          singleMovie.duration = (hours * 60) + minutes;
+        } else if(duration.includes("h")) {
+          let hrArr = duration.split("h"); // ["3"]
+          let hours = Number(hrArr[0]); // 3
+
+          singleMovie.duration = (hours * 60);
+        } else {
+          let minArr = duration.split("min") // ["20"]
+          let minutes = Number(minArr[0]) // 20
+          singleMovie.duration = minutes;
+        }
+        return singleMovie;
+    })
   
-//   return newArr
-//}
+    return formattedMovies;
+}
 
 // BONUS - Iteration 8: Best yearly rate average - Best yearly rate average
+
+
+function bestYearAvg(movies) {
+
+  if (!movies.length) {
+      return null
+  }
+
+  let moviesByYear = {}
+  movies.forEach(function(singleMovie){
+      if (singleMovie.year in moviesByYear) {
+          moviesByYear[singleMovie.year].push(singleMovie)
+      }
+      else {
+          moviesByYear[singleMovie.year] = []
+          moviesByYear[singleMovie.year].push(singleMovie)
+      }
+  })
+
+  let highestRating = 0
+  let year = 0
+
+  for (let currentYear in moviesByYear) {
+      let average = ratesAverage(  moviesByYear[currentYear] )
+      if (average > highestRating ) {
+          highestRating = average
+          year = currentYear
+      }
+  }
+ 
+  return `The best year was ${year} with an average rate of ${highestRating}`
+
+}
